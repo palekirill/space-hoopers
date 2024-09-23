@@ -3,9 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Space Hoopers</title> <!-- Изменено название проекта -->
+    <title>Space Hoopers</title>
     <link href="https://fonts.googleapis.com/css2?family=Kode+Mono&display=swap" rel="stylesheet">
     <style>
+        @font-face {
+            font-family: 'The Voice Of Hope';
+            src: url('fonts/TheVoiceOfHope-Regular.ttf') format('truetype'); /* Убедитесь, что путь правильный */
+        }
         body { 
             margin: 0; 
             background: black; 
@@ -26,7 +30,7 @@
         const ctx = canvas.getContext('2d');
 
         // Размер игрока
-        let player = { x: 225, y: 500, width: 68, height: 65 }; // Размеры для изображения hoop
+        let player = { x: 225, y: 500, width: 68, height: 65 };
         let balls = [];
         let score = 0;
         let lives = 3;
@@ -38,11 +42,11 @@
 
         // Загрузка изображений
         const ballImage = new Image();
-        ballImage.src = 'basketball.svg'; // Путь к изображению мяча
+        ballImage.src = 'basketball.svg';
         const lifeImage = new Image();
-        lifeImage.src = 'life.svg'; // Путь к изображению жизни
+        lifeImage.src = 'life.svg';
         const hoopImage = new Image();
-        hoopImage.src = 'hoop.svg'; // Путь к изображению кольца
+        hoopImage.src = 'hoop.svg';
 
         function resetGame() {
             player.x = (canvas.width - player.width) / 2;
@@ -62,7 +66,10 @@
         }
 
         function gameLoop() {
-            if (gameOver) return;
+            if (gameOver) {
+                drawGameOver();
+                return;
+            }
 
             ctx.fillStyle = 'rgba(36, 0, 255, 1)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -86,7 +93,7 @@
         }
 
         function drawPlayer() {
-            ctx.drawImage(hoopImage, player.x, player.y, player.width, player.height); // Рисуем изображение кольца
+            ctx.drawImage(hoopImage, player.x, player.y, player.width, player.height);
         }
 
         function drawBalls() {
@@ -110,7 +117,6 @@
                     flashStartTime = Date.now();
                     if (lives <= 0) {
                         gameOver = true;
-                        alert(`YOU WIN! YOUR SCORE: ${score}`);
                     }
                 }
             }
@@ -122,19 +128,31 @@
         function drawScore() {
             ctx.fillStyle = 'white';
             ctx.font = '20px "Kode Mono", monospace';
-            ctx.fillText(`Score: ${score}`, 450, 54); // Установлено на 54 пикселя
+            ctx.fillText(`Score: ${score}`, 450, 54);
         }
 
         function drawLives() {
-            const lifeWidth = 30; // Ширина изображения жизни
-            const lifeHeight = 24; // Высота изображения жизни
-            const spacing = 5; // Расстояние между жизнями
-            const startX = 30; // Начальная позиция по оси X для жизней
-            const startY = 30; // Позиция по оси Y для жизней (выравнивание с текстом счета)
+            const lifeWidth = 30;
+            const lifeHeight = 24;
+            const spacing = 5;
+            const startX = 30;
+            const startY = 30;
 
             for (let i = 0; i < lives; i++) {
                 ctx.drawImage(lifeImage, startX + i * (lifeWidth + spacing), startY, lifeWidth, lifeHeight);
             }
+        }
+
+        function drawGameOver() {
+            ctx.fillStyle = 'black';
+            ctx.fillRect(0, 0, canvas.width, canvas.height); // Заливаем черным цветом
+            ctx.fillStyle = 'white';
+            ctx.font = '40px "The Voice Of Hope", sans-serif'; // Используем ваш шрифт
+            ctx.textAlign = 'center';
+            ctx.fillText('you win!', canvas.width / 2, canvas.height / 2 - 10);
+            ctx.fillStyle = '#FF00D6'; // Розовый цвет для счета
+            ctx.font = '20px "Kode Mono", monospace'; // Используем Kode Mono для счета
+            ctx.fillText(`Score: ${score}`, canvas.width / 2, canvas.height / 2 + 30);
         }
 
         document.addEventListener('mousemove', (event) => {
